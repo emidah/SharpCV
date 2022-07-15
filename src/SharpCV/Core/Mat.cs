@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Tensorflow;
@@ -162,22 +163,34 @@ namespace SharpCV
             return $"{shape} {MatType}";
         }
 
-        public MatType FromType(Type type)
-            => Type.GetTypeCode(type) switch
-            {
-                TypeCode.Int32 => MatType.CV_32SC1,
+        public MatType FromType(Type type, int channels = 1) {
+            return Type.GetTypeCode(type) switch {
+                TypeCode.Int32 => channels switch {
+                    1 => MatType.CV_32SC1,
+                    _ => MatType.CV_32SC2
+                },
                 TypeCode.Single => MatType.CV_32FC1,
                 TypeCode.Double => MatType.CV_64FC1,
-                _ => MatType.CV_8UC1
+                _ => channels switch {
+                    1 => MatType.CV_8UC1,
+                    _ => MatType.CV_8UC3
+                }
             };
+        }
 
-        public MatType FromType(TF_DataType dtype)
+        public MatType FromType(TF_DataType dtype, int channels = 1)
             => dtype switch
             {
-                TF_DataType.TF_INT32 => MatType.CV_32SC1,
+                TF_DataType.TF_INT32 => channels switch { 
+                    1 => MatType.CV_32SC1,
+                    _ => MatType.CV_32SC2
+                },
                 TF_DataType.TF_FLOAT => MatType.CV_32FC1,
                 TF_DataType.TF_DOUBLE => MatType.CV_64FC1,
-                _ => MatType.CV_8UC1
+                _ => channels switch {
+                    1 => MatType.CV_8UC1,
+                    _ => MatType.CV_8UC3
+                }
             };
 
         #region ImEncode / ToBytes

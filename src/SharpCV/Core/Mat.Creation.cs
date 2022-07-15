@@ -25,6 +25,9 @@ namespace SharpCV
                 case 2:
                     cv2_native_api.core_Mat_new8((int)nd.shape[0], (int)nd.shape[1], FromType(nd.dtype), nd.data, new IntPtr(0), out _handle);
                     break;
+                case 3:
+                    cv2_native_api.core_Mat_new8((int)nd.shape[0], (int)nd.shape[1], FromType(nd.dtype, 3), nd.data, new IntPtr(0), out _handle);
+                    break;
                 default:
                     throw new NotImplementedException("Not supported");
             }
